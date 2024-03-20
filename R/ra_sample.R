@@ -14,6 +14,7 @@
 #' ra_sample(x = 'pert(0.01,  0.03, 0.64)', n = 10)
 
 ra_sample <- function(x, n, full = F){
+  stopifnot(identical(length(x), 1L))
   dist <- list()
   # identify distribution (first element of the list)
   dist[['distribution']] <- sub(pattern = '\\(.*', replacement = '', x = x) %>% tolower()
@@ -21,7 +22,7 @@ ra_sample <- function(x, n, full = F){
   dist[['parameters']] <- sub(".*(?:\\((.*)\\)).*|.*", "\\1",x) %>% 
     stringr::str_split(string = ., pattern = ',') %>% unlist() %>% as.numeric()
   # If no distribution is specified, interpret as a fixed value
-  if(!is.na(suppressWarnings(as.numeric(dist$distribution)))){ 
+  if (is.numeric(x)) {
     dist <- list()
     dist[["distribution"]] <- "fixed"
     dist[["parameters"]] <- as.numeric(x)
